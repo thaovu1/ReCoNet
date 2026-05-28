@@ -12,12 +12,7 @@ Imports:
     igraph,
     discoMod,
     stats
-
-
-
-
-
-
-
-  
-
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

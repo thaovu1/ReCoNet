@@ -28,7 +28,7 @@ compare_networks(
 Must accept at least (V1, V2) and optionally p.
 If NULL, defaults to PND for relabeling and sum(|A-B|^p) for sign_flipping.}
 
-\item{p}{numeric. Power parameter (used when applicable).}
+\item{p}{numeric. Power parameter (used when applicable), use odd number if selecting sign-flipping.}
 
 \item{n_perm}{integer. Number of permutations.}
 }

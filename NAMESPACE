@@ -2,3 +2,4 @@
 
 export(bootstrap_projection)
 export(compare_networks)
+importFrom(discoMod,PND)

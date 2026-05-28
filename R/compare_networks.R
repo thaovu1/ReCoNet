@@ -13,7 +13,7 @@
 #' @param statistic function or character. Test statistic function.
 #'   Must accept at least (V1, V2) and optionally p.
 #'   If NULL, defaults to PND for relabeling and sum(|A-B|^p) for sign_flipping.
-#' @param p numeric. Power parameter (used when applicable).
+#' @param p numeric. Power parameter (used when applicable), use odd number if selecting sign-flipping.
 #' @param n_perm integer. Number of permutations.
 #'
 #' @return A list with observed statistic, permutation distribution, and p-value.
@@ -27,72 +27,86 @@ compare_networks <- function(A, B,
   
   method <- match.arg(method)
   
+  A <- as.matrix(A)
+  B <- as.matrix(B)
+  
   A <- as.numeric(A[upper.tri(A)])
   B <- as.numeric(B[upper.tri(B)])
   
   # -------------------------------
-  # helper: wrap external statistics
-  # -------------------------------
-  wrap_statistic <- function(f) {
-    args <- names(formals(f))
-    
-    function(V1, V2, p = 1) {
-      if ("p" %in% args) {
-        f(V1, V2, p)
-      } else {
-        f(V1, V2)
-      }
-    }
-  }
-  
-  # -------------------------------
-  # sign-flipping branch (fixed statistic)
+  # SIGN-FLIPPING
   # -------------------------------
   if (method == "sign_flipping") {
     
     D <- A - B
-    
-    stat <- sum(abs(D)^p)
+    stat <- sum(D^p)
     
     perm_stats <- numeric(n_perm)
     
     for (i in seq_len(n_perm)) {
       signs <- sample(c(-1, 1), length(D), replace = TRUE)
-      perm_stats[i] <- sum(abs(D * signs)^p)
+      perm_stats[i] <- sum((D * signs)^p)
     }
     
-    # -------------------------------
-    # relabeling branch (flexible statistic)
-    # -------------------------------
-  } else if (method == "relabeling") {
+    p_val <- mean(abs(perm_stats) >= abs(stat))
     
-    # default statistic: PND from discoMod
+    return(list(
+      observed_stat = stat,
+      p_value = p_val,
+      perm_stats = perm_stats
+    ))
+  }
+  
+  # -------------------------------
+  # RELABELING
+  # -------------------------------
+  if (method == "relabeling") {
+    
     if (is.null(statistic)) {
-      statistic <- discoMod::PND
+      statistic <- "PND"
     }
     
-    # wrap to unify interface
-    stat_fun <- wrap_statistic(statistic)
+    if (!statistic %in% names(stat_map)) {
+      stop(sprintf(
+        "Unsupported statistic '%s'. Choose from: %s", 
+        statistic, paste(names(stat_map), collapse = ", ")
+      ))
+    }
     
-    stat <- stat_fun(A, B, p)
+    # Dynamically fetch the function safely from discoMod namespace
+    fun_name <- stat_map[[statistic]]
+    stat_fun <- getExportedValue("discoMod", fun_name)
+    
+    if (is.null(stat_fun) || !is.function(stat_fun)) {
+      stop(sprintf("Could not find function '%s' inside package 'discoMod'.", fun_name))
+    }
+    
+    # Compute observed statistic
+    if ("p" %in% names(formals(stat_fun))) {
+      stat <- stat_fun(A, B, p)
+    } else {
+      stat <- stat_fun(A, B)
+    }
     
     perm_stats <- numeric(n_perm)
     
     for (i in seq_len(n_perm)) {
-      perm_id <- sample(seq_along(B))
-      perm_stats[i] <- stat_fun(A, B[perm_id], p)
+      perm_id <- sample(seq_along(A))
+      perm_B <- B[perm_id]
+      
+      if ("p" %in% names(formals(stat_fun))) {
+        perm_stats[i] <- stat_fun(A, perm_B, p)
+      } else {
+        perm_stats[i] <- stat_fun(A, perm_B)
+      }
     }
+    
+    p_val <- mean(abs(perm_stats) >= abs(stat))
+    
+    return(list(
+      observed_stat = stat,
+      p_value = p_val,
+      perm_stats = perm_stats
+    ))
   }
-  
-  # -------------------------------
-  # p-value (common)
-  # -------------------------------
-  p_val <- mean(abs(perm_stats) >= abs(stat))
-  
-  list(
-    method = method,
-    observed_stat = stat,
-    p_value = p_val,
-    perm_stats = perm_stats
-  )
 }
