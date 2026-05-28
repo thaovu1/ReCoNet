@@ -3,10 +3,15 @@
 
 # Overview
 
-ReCoNet provides methods for: - network connectivity comparison -
-permutation-based statistical inference - projection-based network
-replication The package operates directly on precontructed adjacency
-matrices. \## Installation
+ReCoNet provides methods for:
+
+- network connectivity comparison
+- permutation-based statistical inference
+- projection-based network replication
+
+The package operates directly on precontructed adjacency matrices.
+
+## Installation
 
 ``` r
 devtools::install_github("thaovu1/ReCoNet")

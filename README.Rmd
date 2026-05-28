@@ -16,10 +16,13 @@ knitr::opts_chunk$set(
 
 # Overview
 ReCoNet provides methods for:
+
 - network connectivity comparison
 - permutation-based statistical inference
 - projection-based network replication
+
 The package operates directly on precontructed adjacency matrices.
+
 ## Installation 
 
 ```{r, eval=FALSE}
