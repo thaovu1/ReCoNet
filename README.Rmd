@@ -1,0 +1,125 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+
+# Overview
+ReCoNet provides methods for:
+- network connectivity comparison
+- permutation-based statistical inference
+- projection-based network replication
+The package operates directly on precontructed adjacency matrices.
+## Installation 
+
+```{r, eval=FALSE}
+devtools::install_github("thaovu1/ReCoNet")
+
+```
+
+## Load package 
+
+```{r setup}
+library(ReCoNet)
+```
+
+## Simulated Example Data
+
+```{r}
+set.seed(123)
+
+A <- matrix(runif(100, 0, 1), 10, 10)
+B <- matrix(rnorm(100, 0, 1), 10, 10)
+
+```
+
+## Network Comparison
+
+The compare_networks() function evaluates total connectivity differences between two networks.
+
+### Sign-flipping permutation
+
+```{r}
+res_sf <- compare_networks(
+  A = A,
+  B = B,
+  method = "sign_flipping",
+  p = 5,
+  n_perm = 1000
+)
+
+res_sf$p_value
+```
+
+The sign-flipping framework evaluates whether the signed connectivity differences deviate from the null expectation of random sign assignment.
+
+
+### Sign-flipping permutation
+
+```{r}
+res_rl <- compare_networks(
+  A = A,
+  B = B,
+  method = "relabeling",
+  statistic = "PND",
+  p = 6,
+  n_perm = 1000
+)
+
+res_rl$p_value
+
+```
+
+## Network Replication
+
+The bootstrap_projection() function evaluates projection-based replication in an independent dataset.
+
+```{r}
+n <- 50
+p <- 10
+
+X1 <- matrix(rnorm(n * p), n, p)
+X2 <- matrix(rnorm(n * p), n, p)
+
+Y1 <- matrix(rnorm(n), n,1)
+Y2 <- matrix(rnorm(n), n,1)
+```
+
+### Inference of Replication with bootstrap
+
+```{r}
+proj_res <- bootstrap_projection(
+  B = 500,
+  M = A,
+  X1 = X1,
+  Y1 = Y1,
+  X2 = X2,
+  Y2 = Y2,
+  npc = 3,
+  alpha = 0.05
+)
+
+proj_res
+```
+
+## Interpretation
+
+The network comparison framework assesses global connectivity differences between two networks using permutation-based significance testing.
+
+The replication framework evaluates reproducibility of network-derived latent structure in independent datasets.
+
+## Session Information
+
+```{r}
+sessionInfo()
+```
