@@ -1,0 +1,23 @@
+Package: ReCoNet
+Title: A comprehensive toolkit for omics network comparison and replication 
+Version: 0.1.0
+Author: Thao Vu
+Maintainer: Thao Vu <thao.3.vu@cuanschutz.edu>
+Description: The software provides distance metrics and permutation frameworks to statistically assess differences between input adjacency matrices. In addition, the software implements a projection ap-proach to transform high-dimensional networks into simplified representations, which are used to quantify network association with outcomes to evaluate replicability. 
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    igraph,
+    discoMod,
+    stats
+
+
+
+
+
+
+
+  
+
