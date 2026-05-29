@@ -42,7 +42,7 @@ library(ReCoNet)
 set.seed(123)
 
 A <- matrix(runif(100, 0, 1), 10, 10)
-B <- matrix(rnorm(100, 0, 1), 10, 10)
+B <- matrix(runif(100, 0, 1), 10, 10)
 
 ```
 
