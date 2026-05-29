@@ -55,7 +55,7 @@ res_sf$p_value
 The sign-flipping framework evaluates whether the signed connectivity
 differences deviate from the null expectation of random sign assignment.
 
-### Sign-flipping permutation
+### Node relabeling permutation
 
 ``` r
 res_rl <- compare_networks(
