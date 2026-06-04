@@ -40,7 +40,7 @@ library(ReCoNet)
 set.seed(123)
 
 A <- matrix(runif(100, 0, 1), 10, 10)
-B <- matrix(rnorm(100, 0, 1), 10, 10)
+B <- matrix(runif(100, 0, 1), 10, 10)
 
 ```
 
@@ -65,7 +65,7 @@ res_sf$p_value
 The sign-flipping framework evaluates whether the signed connectivity differences deviate from the null expectation of random sign assignment.
 
 
-### Sign-flipping permutation
+### Node relabeling permutation
 
 ```{r}
 res_rl <- compare_networks(
@@ -111,6 +111,19 @@ proj_res <- bootstrap_projection(
 )
 
 proj_res
+```
+
+
+### Optional return of NetSHy scores
+
+```{r}
+netshy <- netshy_score(
+  A = A,
+  X = X1,
+  npc = 3
+  )
+
+netshy
 ```
 
 ## Interpretation

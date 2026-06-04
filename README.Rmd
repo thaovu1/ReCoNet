@@ -115,6 +115,18 @@ proj_res <- bootstrap_projection(
 proj_res
 ```
 
+### Optional return of NetSHy scores
+
+```{r}
+netshy <- netshy_score(
+  A = A,
+  X = X1,
+  npc = 3
+  )
+
+netshy
+```
+
 ## Interpretation
 
 The network comparison framework assesses global connectivity differences between two networks using permutation-based significance testing.

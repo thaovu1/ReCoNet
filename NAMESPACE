@@ -2,4 +2,5 @@
 
 export(bootstrap_projection)
 export(compare_networks)
+export(netshy_score)
 importFrom(discoMod,PND)
